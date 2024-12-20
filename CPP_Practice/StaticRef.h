@@ -76,7 +76,7 @@ namespace static_ref{
     }
 
     namespace function_traits{
-        template <typename Ret, typename... Args>
+        template <typename>
         struct basic_function_traits{
         };
 
@@ -87,7 +87,7 @@ namespace static_ref{
         };
 
         // 泛化
-        template <typename Ret, typename... Args>
+        template <typename>
         struct function_traits{
         };
 
@@ -221,10 +221,17 @@ namespace static_ref{
                 // 调用成员函数
                 (instance->*elem.pointer)();
             }
-            
+
             // 递归的进行遍历
             visitTuple<idx + 1>(tuple, instance);
         }
+    }
+
+
+    // C++20 限定
+    template <size_t... idx, typename Tuple, typename Function, typename Class>
+    void visitTuple(Tuple tuple, Function&& f, std::index_sequence<idx...>, Class* instance){
+        (f(std::get<idx>(tuple), instance), ...);
     }
 }
 
